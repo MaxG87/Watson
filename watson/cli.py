@@ -122,14 +122,18 @@ Time = TimeParamType()
 
 def get_projects(ctx, args, incomplete):
     """Function to return all existing projects."""
-    watson = _watson.Watson(config_dir=os.environ.get('WATSON_DIR'))
+    watson = get_watson_instance()
     return (prjct for prjct in watson.projects if prjct.startswith(incomplete))
 
 
 def get_tags(ctx, args, incomplete):
     """Function to return all existing tags."""
-    watson = _watson.Watson(config_dir=os.environ.get('WATSON_DIR'))
+    watson = get_watson_instance()
     return (tag for tag in watson.tags if tag.startswith(incomplete))
+
+
+def get_watson_instance():
+    return _watson.Watson(config_dir=os.environ.get('WATSON_DIR'))
 
 
 @click.group()
@@ -146,7 +150,7 @@ def cli(ctx):
 
     # This is the main command group, needed by click in order
     # to handle the subcommands
-    ctx.obj = _watson.Watson(config_dir=os.environ.get('WATSON_DIR'))
+    ctx.obj = get_watson_instance()
 
 
 @cli.command()
