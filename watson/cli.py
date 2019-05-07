@@ -132,6 +132,15 @@ def get_tags(ctx, args, incomplete):
     return (tag for tag in watson.tags if tag.startswith(incomplete))
 
 
+def get_frames(ctx, args, incomplete):
+    """Function to return all existing frames."""
+    watson = get_watson_instance()
+    return (frame.id
+            for frame in watson.frames
+            if frame.id.startswith(incomplete)
+            )
+
+
 def get_watson_instance():
     return _watson.Watson(config_dir=os.environ.get('WATSON_DIR'))
 
@@ -279,7 +288,7 @@ def stop(watson, at_):
 @cli.command(context_settings={'ignore_unknown_options': True})
 @click.option('-s/-S', '--stop/--no-stop', 'stop_', default=None,
               help="(Don't) Stop an already running project.")
-@click.argument('frame', default='-1')
+@click.argument('frame', default='-1', autocompletion=get_frames)
 @click.pass_obj
 @click.pass_context
 def restart(ctx, watson, frame, stop_):
@@ -1180,7 +1189,7 @@ def add(watson, args, from_, to, confirm_new_project, confirm_new_tag):
               help="Confirm addition of new project.")
 @click.option('-b', '--confirm-new-tag', is_flag=True, default=False,
               help="Confirm creation of new tag.")
-@click.argument('id', required=False)
+@click.argument('id', required=False, autocompletion=get_frames)
 @click.pass_obj
 def edit(watson, confirm_new_project, confirm_new_tag, id):
     """
@@ -1304,7 +1313,7 @@ def edit(watson, confirm_new_project, confirm_new_tag, id):
 
 
 @cli.command(context_settings={'ignore_unknown_options': True})
-@click.argument('id')
+@click.argument('id', autocompletion=get_frames)
 @click.option('-f', '--force', is_flag=True,
               help="Don't ask for confirmation.")
 @click.pass_obj
