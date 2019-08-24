@@ -16,6 +16,7 @@ except ImportError:
 import click
 import arrow
 
+import watson as _watson
 from .fullmoon import get_last_full_moon
 
 from click.exceptions import UsageError
@@ -397,3 +398,7 @@ def flatten_report_for_csv(report):
                 'time': tag['time']
             })
     return result
+
+
+def get_watson_instance():
+    return _watson.Watson(config_dir=os.environ.get('WATSON_DIR'))
